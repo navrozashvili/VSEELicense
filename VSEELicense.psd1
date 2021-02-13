@@ -9,8 +9,8 @@
     PowerShellVersion    = '3.0'
     RequiredAssemblies   = @('System.Security')
     FunctionsToExport    = @(
-        'Set-VSCELicenseExpirationDate'
-        'Get-VSCELicenseExpirationDate'
+        'Set-VSEELicenseExpirationDate'
+        'Get-VSEELicenseExpirationDate'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

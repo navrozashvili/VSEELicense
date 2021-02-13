@@ -1,9 +1,7 @@
 #region Constants
 
 New-Variable -Name VSCELicenseMap -Value @{
-    '2015' = 'Licenses\4D8CFBCB-2F6A-4AD2-BABF-10E28F6F2C8F\07078'
-    '2017' = 'Licenses\5C505A59-E312-4B89-9508-E162F8150517\08878'
-    '2019' = 'Licenses\41717607-F34E-432C-A138-A3CFD7E25CDA\09278'
+    "2019" = "Licenses\41717607-F34E-432C-A138-A3CFD7E25CDA\09260"
 } -Option Constant
 
 #endregion
@@ -19,7 +17,7 @@ function Test-Elevation {
     [bool](
         (
             [System.Security.Principal.WindowsIdentity]::GetCurrent()
-        ).Groups -contains 'S-1-5-32-544'
+        ).Groups -contains "S-1-5-32-544"
     )
 }
 
@@ -38,20 +36,11 @@ function ConvertFrom-BinaryDate {
 
     End {
         Get-Date -Year (
-            [System.BitConverter]::ToInt16(
-                $InputObject[0..1],
-                0
-            )
+            [System.BitConverter]::ToInt16($InputObject[0..1], 0)
         ) -Month (
-            [System.BitConverter]::ToInt16(
-                $InputObject[2..3],
-                0
-            )
+            [System.BitConverter]::ToInt16($InputObject[2..3], 0)
         ) -Day (
-            [System.BitConverter]::ToInt16(
-                $InputObject[4..6],
-                0
-            )
+            [System.BitConverter]::ToInt16($InputObject[4..6], 0)
         ) -Hour 0 -Minute 0 -Second 0
     }
 }
@@ -59,7 +48,7 @@ function ConvertFrom-BinaryDate {
 
 <#
 .Synopsis
-    Convert [datetime] to VS CE binary date format
+    Convert [datetime] to VS EE binary date format
 #>
 function ConvertTo-BinaryDate {
     [CmdletBinding()]
@@ -92,7 +81,7 @@ Function Open-HKCRSubKey {
 
     Begin {
         if ($ReadWrite -and -not (Test-Elevation)) {
-            throw 'This action requires elevated permissions. Run PowerShell as Administrator.'
+            throw "This action requires elevated permissions. Run PowerShell as Administrator."
         }
     }
 
@@ -128,51 +117,30 @@ Function Open-HKCRSubKey {
 
 <#
 .Synopsis
-    Get Visual Studio Community Edition license expiration date
-
-.Parameter Version
-    String array. One ore more of the supported Visual Studio Community Edition versions.
-    Default: '2015', '2017', '2019'
-
-.Example
-    Get-VSCELicenseExpirationDate -Version 2017
-
-    Get expiration date for all supported versions of Visual Studio.
-
-.Example
-    Get-VSCELicenseExpirationDate -Version 2017
-
-    Get expiration date for Visual Studio 2017.
+    Get Visual Studio 2019 Enterprise Edition license expiration date
 #>
 function Get-VSCELicenseExpirationDate {
-    [CmdletBinding()]
-    Param (
-        [ValidateSet('2015', '2017', '2019')]
-        [string[]]$Version = @('2015', '2017', '2019')
-    )
-
     End {
-        foreach ($v in $Version) {
-            if ($LicenseKey = Open-HKCRSubKey -SubKey $VSCELicenseMap.$v) {
+        $v = "2019"
+        if ($LicenseKey = Open-HKCRSubKey -SubKey $VSCELicenseMap.$v) {
 
-                try {
-                    $LicenseBlob = [System.Security.Cryptography.ProtectedData]::Unprotect(
-                        $LicenseKey.GetValue($null),
-                        $null,
-                        [System.Security.Cryptography.DataProtectionScope]::LocalMachine
-                    )
-                }
-                catch {
-                    throw $_
-                }
-                finally {
-                    $LicenseKey.Dispose()
-                }
+            try {
+                $LicenseBlob = [System.Security.Cryptography.ProtectedData]::Unprotect(
+                    $LicenseKey.GetValue($null),
+                    $null,
+                    [System.Security.Cryptography.DataProtectionScope]::LocalMachine
+                )
+            }
+            catch {
+                throw $_
+            }
+            finally {
+                $LicenseKey.Dispose()
+            }
 
-                [PSCustomObject]@{
-                    Version        = $v
-                    ExpirationDate = ConvertFrom-BinaryDate $LicenseBlob[-16..-11] -ErrorAction Stop
-                }
+            [PSCustomObject]@{
+                Version        = $v
+                ExpirationDate = ConvertFrom-BinaryDate $LicenseBlob[-16..-11] -ErrorAction Stop
             }
         }
     }
@@ -181,16 +149,15 @@ function Get-VSCELicenseExpirationDate {
 
 <#
 .Synopsis
-    Set Visual Studio Community Edition license expiration date
+    Set Visual Studio 2019 Community Edition license expiration date
 
 .Description
-    Set Visual Studio Community Edition license expiration date.
+    Set Visual Studio 2019 Community Edition license expiration date.
     Will add 31 day from current date by default.
     This is max allowed number of days, otherwise your license will be deemed invalid.
 
 .Parameter Version
-    String array. One ore more of the supported Visual Studio Community Edition versions.
-    Default: '2015', '2017', '2019'
+    Default is Visual Studio 2019 Enterprise Edition.
 
 .Parameter AddDays
     Int. Number of days to add. 31 is max allowed and default.
@@ -198,72 +165,57 @@ function Get-VSCELicenseExpirationDate {
 .Example
     Set-VSCELicenseExpirationDate
 
-    Set license expiration date to current date + 31 day for all supported versions of Visual Studio.
-
-.Example
-    Set-VSCELicenseExpirationDate -Version 2019
-
-    Set license expiration date to current date + 31 day for Visual Studio 2019 only.
+    Set license expiration date to current date + 31 day.
 
 .Example
     Set-VSCELicenseExpirationDate -AddDays 10
 
-    Set license expiration date to current date + 10 days for all supported versions of Visual Studio.
-
-.Example
-    Set-VSCELicenseExpirationDate -Version 2019 -AddDays 0
-
-    Set license expiration date to current date for Visual Studio 2019 only.
-    This will immediately expire your license and you wouldn't be able to use Visual Studio 2019.
+    Set license expiration date to current date + 10 days.
 #>
 function Set-VSCELicenseExpirationDate {
     [CmdletBinding()]
     Param (
-        [ValidateSet('2015', '2017', '2019')]
-        [string[]]$Version = @('2015', '2017', '2019'),
-
         [ValidateRange(0, 31)]
         [int]$AddDays = 31
     )
 
     End {
-        foreach ($v in $Version) {
-            if ($LicenseKey = Open-HKCRSubKey -SubKey $VSCELicenseMap.$v -ReadWrite) {
+        $v = "2019"
+        if ($LicenseKey = Open-HKCRSubKey -SubKey $VSCELicenseMap.$v -ReadWrite) {
 
-                try {
-                    $LicenseBlob = [System.Security.Cryptography.ProtectedData]::Unprotect(
-                        $LicenseKey.GetValue($null),
+            try {
+                $LicenseBlob = [System.Security.Cryptography.ProtectedData]::Unprotect(
+                    $LicenseKey.GetValue($null),
+                    $null,
+                    [System.Security.Cryptography.DataProtectionScope]::LocalMachine
+                )
+
+                $NewExpirationDate = [datetime]::Today.AddDays($AddDays)
+
+                $LicenseKey.SetValue(
+                    $null,
+                    [System.Security.Cryptography.ProtectedData]::Protect(
+                        @(
+                            $LicenseBlob[ - $LicenseBlob.Count..-17]
+                            $NewExpirationDate | ConvertTo-BinaryDate -ErrorAction Stop
+                            $LicenseBlob[-10..-1]
+                        ),
                         $null,
                         [System.Security.Cryptography.DataProtectionScope]::LocalMachine
-                    )
+                    ),
+                    [Microsoft.Win32.RegistryValueKind]::Binary
+                )
+            }
+            catch {
+                throw $_
+            }
+            finally {
+                $LicenseKey.Dispose()
+            }
 
-                    $NewExpirationDate = [datetime]::Today.AddDays($AddDays)
-
-                    $LicenseKey.SetValue(
-                        $null,
-                        [System.Security.Cryptography.ProtectedData]::Protect(
-                            @(
-                                $LicenseBlob[ - $LicenseBlob.Count..-17]
-                                $NewExpirationDate | ConvertTo-BinaryDate -ErrorAction Stop
-                                $LicenseBlob[-10..-1]
-                            ),
-                            $null,
-                            [System.Security.Cryptography.DataProtectionScope]::LocalMachine
-                        ),
-                        [Microsoft.Win32.RegistryValueKind]::Binary
-                    )
-                }
-                catch {
-                    throw $_
-                }
-                finally {
-                    $LicenseKey.Dispose()
-                }
-
-                [PSCustomObject]@{
-                    Version        = $v
-                    ExpirationDate = $NewExpirationDate
-                }
+            [PSCustomObject]@{
+                Version        = $v
+                ExpirationDate = $NewExpirationDate
             }
         }
     }

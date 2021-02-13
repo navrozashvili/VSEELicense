@@ -1,6 +1,6 @@
 #region Constants
 
-New-Variable -Name VSCELicenseMap -Value @{
+New-Variable -Name VSEELicenseMap -Value @{
     "2019" = "Licenses\41717607-F34E-432C-A138-A3CFD7E25CDA\09260"
 } -Option Constant
 
@@ -119,10 +119,10 @@ Function Open-HKCRSubKey {
 .Synopsis
     Get Visual Studio 2019 Enterprise Edition license expiration date
 #>
-function Get-VSCELicenseExpirationDate {
+function Get-VSEELicenseExpirationDate {
     End {
         $v = "2019"
-        if ($LicenseKey = Open-HKCRSubKey -SubKey $VSCELicenseMap.$v) {
+        if ($LicenseKey = Open-HKCRSubKey -SubKey $VSEELicenseMap.$v) {
 
             try {
                 $LicenseBlob = [System.Security.Cryptography.ProtectedData]::Unprotect(
@@ -163,16 +163,16 @@ function Get-VSCELicenseExpirationDate {
     Int. Number of days to add. 31 is max allowed and default.
 
 .Example
-    Set-VSCELicenseExpirationDate
+    Set-VSEELicenseExpirationDate
 
     Set license expiration date to current date + 31 day.
 
 .Example
-    Set-VSCELicenseExpirationDate -AddDays 10
+    Set-VSEELicenseExpirationDate -AddDays 10
 
     Set license expiration date to current date + 10 days.
 #>
-function Set-VSCELicenseExpirationDate {
+function Set-VSEELicenseExpirationDate {
     [CmdletBinding()]
     Param (
         [ValidateRange(0, 31)]
@@ -181,7 +181,7 @@ function Set-VSCELicenseExpirationDate {
 
     End {
         $v = "2019"
-        if ($LicenseKey = Open-HKCRSubKey -SubKey $VSCELicenseMap.$v -ReadWrite) {
+        if ($LicenseKey = Open-HKCRSubKey -SubKey $VSEELicenseMap.$v -ReadWrite) {
 
             try {
                 $LicenseBlob = [System.Security.Cryptography.ProtectedData]::Unprotect(

@@ -24,7 +24,7 @@ function Test-Elevation {
 
 <#
 .Synopsis
-    Converts VS CE binary date format to [datetime]
+    Converts VS EE binary date format to [datetime]
 #>
 function ConvertFrom-BinaryDate {
     [CmdletBinding()]

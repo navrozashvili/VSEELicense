@@ -1,7 +1,7 @@
 @{
     RootModule           = 'VSEELicense.psm1'
     ModuleVersion        = '0.0.9'
-    GUID                 = 'a99bf6dc-41a5-4305-9113-db6d94fc5147'
+    GUID                 = 'f2130262-a9fb-43c9-894c-a276820ed46e'
     Author               = 'beatcracker, l3afblow3r'
     CompanyName          = 'N/A'
     Copyright            = '2021'

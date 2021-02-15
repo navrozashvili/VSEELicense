@@ -149,10 +149,10 @@ function Get-VSEELicenseExpirationDate {
 
 <#
 .Synopsis
-    Set Visual Studio 2019 Community Edition license expiration date
+    Set Visual Studio 2019 Enterprise Edition license expiration date
 
 .Description
-    Set Visual Studio 2019 Community Edition license expiration date.
+    Set Visual Studio 2019 Enterprise Edition license expiration date.
     Will add 31 day from current date by default.
     This is max allowed number of days, otherwise your license will be deemed invalid.
 

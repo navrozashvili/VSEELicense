@@ -3,8 +3,8 @@
 - [Details](#details)
 - [Usage](#usage)
 - [Examples](#examples)
-  - [Get Visual Studio 2019 Enterprise Edition license expiration date](#get-visual-studio-enterprise-edition-license-expiration-date)
-  - [Set Visual Studio 2019 Enterprise Edition license expiration date](#set-visual-studio-enterprise-edition-license-expiration-date)
+  - [Get Visual Studio 2022 Enterprise Edition license expiration date](#get-visual-studio-enterprise-edition-license-expiration-date)
+  - [Set Visual Studio 2022 Enterprise Edition license expiration date](#set-visual-studio-enterprise-edition-license-expiration-date)
     - [Set license expiration date to 31 day from now](#set-license-expiration-date-to-31-days-from-nowy)
     - [Set license expiration date to 10 days from now](#set-license-expiration-date-to-10-days-from-now)
     - [Set license expiration date to current date](#set-license-expiration-date-to-current-date)
@@ -12,7 +12,7 @@
 
 ## Details
 
-PowerShell module to get and set Visual Studio 2019 Enterprise Edition license expiration date in the registry.
+PowerShell module to get and set Visual Studio 2022 Enterprise Edition license expiration date in the registry.
 
 Based on [Dmitrii](https://stackoverflow.com/users/10046552/dmitrii)'s answer to this question: [Is Visual Studio Community a 30 day trial?](https://stackoverflow.com/questions/43390466/visual-studio-community-2017-is-a-30-day-trial/51570570#51570570)
 
@@ -41,13 +41,13 @@ Based on [Dmitrii](https://stackoverflow.com/users/10046552/dmitrii)'s answer to
 
 ## Examples
 
-### Get Visual Studio 2019 Enterprise Edition license expiration date
+### Get Visual Studio 2022 Enterprise Edition license expiration date
 
 ```pwsh
 Get-VSEELicenseExpirationDate
 ```
 
-### Set Visual Studio 2019 Enterprise Edition license expiration date
+### Set Visual Studio 2022 Enterprise Edition license expiration date
 
 ⚡ Writing to the Visual Studio license registry key requires elevated permissions. Run PowerShell as administrator for examples to work.
 
@@ -73,6 +73,7 @@ Set-VSEELicenseExpirationDate -AddDays 0
 
 ### Changelog
 
+- 0.0.10 - Replaced 2019 with 2022 prerelase 
 - 0.0.9 - Added 2019 Enterprise support only. Removed 2015, 2017 & 2019 Community
 - 0.0.8 - Make it easier to use by not requiring to specify Visual Studio version
 - 0.0.7 - Added 2015 support ([@GDI123](https://github.com/GDI123))

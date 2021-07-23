@@ -1,7 +1,7 @@
 #region Constants
 
 New-Variable -Name VSEELicenseMap -Value @{
-    "2019" = "Licenses\41717607-F34E-432C-A138-A3CFD7E25CDA\09260"
+    "2022" = "Licenses\10D17DBA-761D-4CD8-A627-984E75A58700\09360"
 } -Option Constant
 
 #endregion
@@ -117,11 +117,11 @@ Function Open-HKCRSubKey {
 
 <#
 .Synopsis
-    Get Visual Studio 2019 Enterprise Edition license expiration date
+    Get Visual Studio 2022 Enterprise Edition license expiration date
 #>
 function Get-VSEELicenseExpirationDate {
     End {
-        $v = "2019"
+        $v = "2022"
         if ($LicenseKey = Open-HKCRSubKey -SubKey $VSEELicenseMap.$v) {
 
             try {
@@ -149,15 +149,15 @@ function Get-VSEELicenseExpirationDate {
 
 <#
 .Synopsis
-    Set Visual Studio 2019 Enterprise Edition license expiration date
+    Set Visual Studio 2022 Enterprise Edition license expiration date
 
 .Description
-    Set Visual Studio 2019 Enterprise Edition license expiration date.
+    Set Visual Studio 2022 Enterprise Edition license expiration date.
     Will add 31 day from current date by default.
     This is max allowed number of days, otherwise your license will be deemed invalid.
 
 .Parameter Version
-    Default is Visual Studio 2019 Enterprise Edition.
+    Default is Visual Studio 2022 Enterprise Edition.
 
 .Parameter AddDays
     Int. Number of days to add. 31 is max allowed and default.
@@ -180,7 +180,7 @@ function Set-VSEELicenseExpirationDate {
     )
 
     End {
-        $v = "2019"
+        $v = "2022"
         if ($LicenseKey = Open-HKCRSubKey -SubKey $VSEELicenseMap.$v -ReadWrite) {
 
             try {

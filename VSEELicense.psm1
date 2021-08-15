@@ -1,7 +1,7 @@
 #region Constants
 
 New-Variable -Name VSEELicenseMap -Value @{
-    "2022" = "Licenses\10D17DBA-761D-4CD8-A627-984E75A58700\09360"
+    "2022" = "Licenses\10D17DBA-761D-4CD8-A627-984E75A58700\09460"
 } -Option Constant
 
 #endregion
